@@ -8,10 +8,21 @@
 uint8_t buf[1024*1024]; //1024*1024byte
 size_t bytes;
 
+
 int main(void) {
     struct rabin_t *hash;
     hash = rabin_init();
+    FILE *pFile;
 
+    pFile = fopen( "Small_file_ChunkedSize.txt","w" );
+
+    if( NULL == pFile ){
+
+        printf( "open failure" );
+
+        return 1;
+
+    }
     unsigned int chunks = 0;
    // int i=1;
     while (!feof(stdin)) {
@@ -32,9 +43,8 @@ int main(void) {
             len -= remaining;
             ptr += remaining;
            // printf("%p address \n%x value \n%d remaining\n",ptr,*ptr,remaining);
-            printf("chunksize %d Byte %016llx\n",
-                last_chunk.length,//(chunk_t) last_chunk define in rabin.h
-                (long long unsigned int)last_chunk.cut_fingerprint);
+            printf("chunksize %d Byte \n",last_chunk.length);
+            fprintf(pFile, "%d\n",last_chunk.length);
 
             chunks++;
         }
@@ -43,15 +53,14 @@ int main(void) {
 
     if (rabin_finalize(hash) != NULL) {
         chunks++;
-         printf("chunksize %dByte %016llx\n",
-            last_chunk.length,
-            (long long unsigned int)last_chunk.cut_fingerprint);
+         printf("chunksize %d Byte \n", last_chunk.length);
+         fprintf(pFile, "%d\n",last_chunk.length);
     }
 
     unsigned int avg = 0;
     if (chunks > 0)
         avg = bytes / chunks; 
     printf("%d chunks, average chunk size %d byte", chunks, avg);
-
+     fclose(pFile);
     return 0;
 }

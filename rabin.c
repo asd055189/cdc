@@ -108,9 +108,9 @@ void rabin_reset(struct rabin_t *h) {
 }
 
 int rabin_next_chunk(struct rabin_t *h, uint8_t *buf, unsigned int len) {
-    printf("%p start address\n",buf);
-    uint8_t *p=buf;
-    int count=h->count;
+    //printf("%p start address\n",buf);
+    //uint8_t *p=buf;
+    //int count=h->count;
     
     for (unsigned int i = 0; i < len; i++) {
         uint8_t b = *buf++;
@@ -126,7 +126,7 @@ int rabin_next_chunk(struct rabin_t *h, uint8_t *buf, unsigned int len) {
             last_chunk.cut_fingerprint = h->digest;
         //for (unsigned int i=0;i<h->count-count;i++,p++)
           //printf("%x",*p );
-            printf("%d size\n",h->count-count);
+            //("%d size\n",h->count-count);
             // keep position
             unsigned int pos = h->pos;
             rabin_reset(h);
@@ -138,7 +138,7 @@ int rabin_next_chunk(struct rabin_t *h, uint8_t *buf, unsigned int len) {
     //for (unsigned int i=0;i<h->count-count;i++,p++)
        // printf("%x",*p );
 
-    printf("%d size\n",h->count-count);
+    //printf("%d size\n",h->count-count);
     return -1;
 }
 

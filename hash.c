@@ -106,6 +106,6 @@ int main(){
 	 			}
  		}
 	fprintf(pFile,"dedup size/file size = %f/%f (bytes)\n",dedupsize,filesize );
-	fprintf(pFile, "dedup rate is %.10f \n",(1.0-dedupsize/filesize));
+	fprintf(pFile, "dedup rate is %.10f \n",dedupsize/filesize);
 	fclose(pFile);
 }

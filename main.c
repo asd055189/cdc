@@ -14,7 +14,7 @@ int main(void) {
     hash = rabin_init();
     FILE *pFile;
 
-    pFile = fopen( "Small_file_ChunkedSize.txt","w" );
+    pFile = fopen( "ChunkedSize.txt","w" );
 
     if( NULL == pFile ){
 
@@ -43,7 +43,7 @@ int main(void) {
             len -= remaining;
             ptr += remaining;
            // printf("%p address \n%x value \n%d remaining\n",ptr,*ptr,remaining);
-            printf("chunksize %d Byte \n",last_chunk.length);
+            //printf("chunksize %d Byte \n",last_chunk.length);
             fprintf(pFile, "%d\n",last_chunk.length);
 
             chunks++;
@@ -53,7 +53,7 @@ int main(void) {
 
     if (rabin_finalize(hash) != NULL) {
         chunks++;
-         printf("chunksize %d Byte \n", last_chunk.length);
+         //printf("chunksize %d Byte \n", last_chunk.length);
          fprintf(pFile, "%d\n",last_chunk.length);
     }
 

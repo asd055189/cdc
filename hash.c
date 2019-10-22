@@ -25,12 +25,12 @@ int main(){
     ssize_t read;
     double filesize=0;
     double dedupsize=0;
-    fp = fopen("Small_file_ChunkedSize.txt", "r");
+    fp = fopen("ChunkedSize.txt", "r");
     int count=1;
     while ((read = getline(&line, &len, fp)) != -1) {
 	    int chunksize = atoi(line);
 	    filesize+=chunksize;
-	    fprintf(pFile,"  chunksize = %d ",chunksize );
+	   // fprintf(pFile,"  chunksize = %d ",chunksize );
 	        size_t len = fread(buf2, 1,chunksize, stdin);
 	 		unsigned char hash[20]; //8 (bit/index) (8*20=160 bit)
 	 		SHA1(buf2,chunksize, hash);
@@ -50,13 +50,13 @@ int main(){
 	 			tmp->fingerprint[i]=hash[i];
 	 		fprintf(pFile,"  %d",index);
 	 		if (hash_table[index]==NULL){
-	 			fprintf(pFile,"is empty! ");
+	 			//fprintf(pFile,"is empty! ");
 	 			hash_table[index]=tmp;
 	 		}
 	 		else{
 	 			Node* ptr=hash_table[index];
 	 			ptr->linked_count++;
-	 			fprintf(pFile,"this inex has %d entry",ptr->linked_count );
+	 			//fprintf(pFile,"this index has %d entry",ptr->linked_count );
 	 			while(ptr->next!=NULL)
 	 				ptr=ptr->next;
 	 			ptr->next=tmp;
@@ -70,38 +70,39 @@ int main(){
  		for (int i=0;i<HASH_TABLE_INDEX;i++){
  			if (hash_table[i]!=0)
 	 			if (hash_table[i]->linked_count>1){
-	 				fprintf(pFile,"\n%d   %d\n",hash_table[i]->linked_count,i );
-	 				unsigned char dup[hash_table[i]->linked_count][20];
-	 				int dup_chunksize[hash_table[i]->linked_count];
+	 				//fprintf(pFile,"\n%d   %d\n",hash_table[i]->linked_count,i );
 	 				Node* ptr=hash_table[i];
-	 				int pos=0;
 	 				while (ptr->next!=NULL){
-	 					for (int j=0;j<20;j++){
-	 						//fprintf(pFile,"%02x",ptr->fingerprint[j]);
- 							dup[pos][j]=ptr->fingerprint[j];
-	 					}
- 						dup_chunksize[pos]=ptr->size;
- 						ptr=ptr->next;
- 						pos++;
- 					}
- 					for (int j=0;j<20;j++){
- 							dup[pos][j]=ptr->fingerprint[j];
- 							//fprintf(pFile,"%02x",ptr->fingerprint[j]);
- 					}
- 					dup_chunksize[pos]=ptr->size;
- 					int dedupcount=0;
- 					for (int a=0;a<hash_table[i]->linked_count;a++){
- 						for (int b=a+1;b<hash_table[i]->linked_count;b++){	
- 							bool tag=true;
- 							for (int c=0;c<20;c++)
- 								if (dup[a][c]!=dup[b][c])
- 									tag=false;
- 							if(tag){
- 								fprintf(pFile, "find deduplicate! chunksize = %d\n",dup_chunksize[b]);
- 								dedupsize+=dup_chunksize[b];
- 								dup_chunksize[b]=0;
- 							}
+	 					Node* fptr2=ptr;
+						Node* ptr2=ptr->next;
+	 					while(ptr2->next!=NULL){
+		 					bool tag=true;
+		 					for (int j=0;j<20;j++){
+		 						if (ptr->fingerprint[j]!=ptr2->fingerprint[j])
+		 							tag=false;
+		 					}
+	 						if(tag){
+	 							fprintf(pFile,"dedup! %d entry pos %d\n",ptr2->size,i);
+	 							dedupsize+=ptr2->size;
+	 							fptr2->next=ptr2->next;
+	 							//delete ptr2;
+	 						}
+	 						ptr2=ptr2->next;
+	 						if(!tag)
+	 							fptr2=fptr2->next;
  						}
+ 						bool tag=true;
+ 						for (int j=0;j<20;j++){
+	 						if (ptr->fingerprint[j]!=ptr2->fingerprint[j])
+	 							tag=false;
+		 				}
+		 				if(tag){
+		 					fprintf(pFile,"dedup! %d entry pos %d\n",ptr2->size,i);
+	 							dedupsize+=ptr2->size;
+	 							//fptr2->next=NULL;
+	 							//delete ptr2;
+	 					}
+	 					ptr=ptr->next;
  					}
 	 			}
  		}

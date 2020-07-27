@@ -32,6 +32,7 @@ int main(){
 	    filesize+=chunksize;
 	   // fprintf(pFile,"  chunksize = %d ",chunksize );
 	        size_t len = fread(buf2, 1,chunksize, stdin);
+	        if (len != chunksize) {fputs ("\n==========\nReading error, the input file don't match the ChunkedSize\n==========\n",stderr); exit (3);}
 	 		unsigned char hash[20]; //8 (bit/index) (8*20=160 bit)
 	 		SHA1(buf2,chunksize, hash);
 	 		for (int i=0;i<20;i++)

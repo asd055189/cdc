@@ -6,3 +6,4 @@ rabin-cdc
 *.xz
 linux-5.3.5*
 *.tar
+.DS_Store
